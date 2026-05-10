@@ -29,3 +29,14 @@ const llmOutput = `// Refactored\nDATABASE_URL: postgres://admin:__STACK_SEC_1__
 
 // 3. Restore secrets locally
 const finalCode = sanitizer.restore(llmOutput, sanitizer.getMap());
+```
+
+## Security & Regex Coverage
+- [x] Multi-line RSA / ECDSA Private Keys
+- [x] AWS Credentials (`AKIA...`)
+- [x] Embedded DB URIs with greedy characters (`@`, `!`)
+- [x] JWT Tokens
+- [x] Generic high-entropy assignments
+
+## License
+MIT
