@@ -11,7 +11,7 @@ I didn't just want a library, I needed a tool I could actually use during produc
 I integrated `GhostSanitizer` into a full Zero-Backend diagnostic matrix called **[StackEngine.dev](https://stackengine.dev)**. 
 
 You can test the live decryption theater (press F12 to watch the sanitizer intercept secrets before the network request) on specific edge cases here:
-👉 **[Test Live Sandbox: K8s OOMKilled Analyzer](https://stackengine.dev/k8s-oomkilled-exit-137-eks-fargate)**
+👉 **Test Live Sandbox:** [PostgreSQL Deadlock ShareLock Transaction Audit](https://stackengine.dev/postgres-deadlock-detected-sharelock-transaction)
 
 ## Quick Start
 ```typescript
