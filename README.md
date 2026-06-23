@@ -13,7 +13,7 @@ You can test the live Demo here:
  [PostgreSQL Deadlock ShareLock Transaction Audit](https://stackengine.dev/postgres-deadlock-detected-sharelock-transaction) 
  > PostgreSQL deadlock on ShareLock forces transaction rollback, causing cascading failures in high-concurrency write workloads.
 
-https://github.com/user-attachments/assets/92397b0b-c193-4fee-9337-4e8cd8cd5ce7
+<video src="https://github.com/user-attachments/assets/92397b0b-c193-4fee-9337-4e8cd8cd5ce7" autoplay loop muted playsinline width="100%"></video>
 
 ## Why?
 Pasting `docker-compose.yml`, Kubernetes manifests, or `.env` files into LLMs is a massive OPSEC risk. Existing scrubbers are either heavy Node.js libraries or require sending data to a backend. GhostSanitizer runs 100% in the browser (or Edge Worker), tokenizing secrets into safe placeholders (e.g., `__STACK_SEC_1__`) and providing a map to safely restore them locally.
