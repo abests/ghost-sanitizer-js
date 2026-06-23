@@ -1,5 +1,5 @@
 # GhostSanitizer 👻
-A zero-dependency, pure client-side TypeScript/Regex engine to sanitize high-entropy secrets (AWS Keys, DB URIs, RSA Keys, JWTs) from configurations *before* they are sent to external LLM APIs (like ChatGPT or Claude).
+A zero-dependency, pure client-side TypeScript/Regex engine to sanitize high-entropy secrets (Docker Compose YAML, AWS Keys, DB URIs, RSA Keys, JWTs) from configurations *before* they are sent to external LLM APIs (like ChatGPT or Claude).
 
 ## Live Demo & Real-World Implementation
 I didn't just want a library, I needed a tool I could actually use during production incidents. 
