@@ -1,24 +1,30 @@
 # GhostSanitizer 👻
-A zero-dependency, pure client-side TypeScript/Regex engine to sanitize high-entropy secrets (Docker Compose YAML, AWS Keys, DB URIs, RSA Keys, JWTs) from configurations *before* they are sent to external LLM APIs (like ChatGPT or Claude).
 
-## Live Demo & Real-World Implementation
-I didn't just want a library, I needed a tool I could actually use during production incidents. 
+A zero-dependency, pure client-side TypeScript engine for redacting high-entropy secrets (AWS Keys, DB URIs, RSA Keys, JWTs) from infrastructure configs *before* piping them to LLMs.
 
-You can test the live Demo here: 
-(I highly encourage you to keep your F12 Network Tab open while using it—you'll see firsthand that absolutely zero secrets ever hit a backend)
+Pasting raw `docker-compose.yml` or K8s manifests into ChatGPT is a massive OPSEC risk. Existing scrubbers are either bloated Node.js packages or require sending data to a backend. GhostSanitizer runs 100% in the browser via WASM/JS.
 
- [Docker Compose YAML Unmarshal Validator](https://stackengine.dev/docker-compose-yaml-unmarshal-indentation-error)
- > Malformed indentation in compose.yaml triggers YAML unmarshal errors that hard-stop docker-compose config parsing and block all container orchestration.
+## Live Implementation (Demo)
 
- [PostgreSQL Deadlock ShareLock Transaction Audit](https://stackengine.dev/postgres-deadlock-detected-sharelock-transaction) 
- > PostgreSQL deadlock on ShareLock forces transaction rollback, causing cascading failures in high-concurrency write workloads.
+I originally built this engine to power a zero-trust diagnostic matrix for my team. If you want to test the redaction logic against live LLM inferencing without writing code, you can use the production implementations below.
+
+*Open your F12 Network tab. You will see the payloads are sanitized locally before any outbound request is made.*
+
+- 🛠️ [Try it on a broken Docker Compose YAML](https://stackengine.dev/docker-compose-yaml-unmarshal-indentation-error)
+- 🛠️ [Try it on a PostgreSQL Deadlock Log](https://stackengine.dev/postgres-deadlock-detected-sharelock-transaction)
 
 <video src="https://github.com/user-attachments/assets/92397b0b-c193-4fee-9337-4e8cd8cd5ce7" autoplay loop muted playsinline width="100%"></video>
 
-## Why?
-Pasting `docker-compose.yml`, Kubernetes manifests, or `.env` files into LLMs is a massive OPSEC risk. Existing scrubbers are either heavy Node.js libraries or require sending data to a backend. GhostSanitizer runs 100% in the browser (or Edge Worker), tokenizing secrets into safe placeholders (e.g., `__STACK_SEC_1__`) and providing a map to safely restore them locally.
+## The "Tokenization" Workflow
+Dumb masking (replacing secrets with `***`) breaks the LLM's AST parsing and context window. We use deterministic tokenization instead.
+
+1. **Intercept:** Browser script catches the raw config.
+2. **Tokenize:** Secrets are replaced locally (`postgres://admin:SuperSecret -> postgres://admin:__STACK_SEC_1__`).
+3. **Transmit:** The LLM receives the tokenized payload, fixes the indentation/syntax, and returns it.
+4. **Restore:** GhostSanitizer maps the tokens back to the real secrets in the browser memory.
 
 ## Quick Start
+
 ```typescript
 import { GhostSanitizer } from './sanitizer';
 
@@ -29,7 +35,7 @@ const rawConfig = `DATABASE_URL: postgres://admin:SuperS3cr3t!@db.example.com`;
 const safePayload = sanitizer.sanitize(rawConfig);
 // Output: DATABASE_URL: postgres://admin:__STACK_SEC_1__@db.example.com
 
-// 2. LLM returns refactored code with token
+// 2. Mock LLM returning refactored code
 const llmOutput = `// Refactored\nDATABASE_URL: postgres://admin:__STACK_SEC_1__@db.example.com`;
 
 // 3. Restore secrets locally
@@ -41,7 +47,7 @@ const finalCode = sanitizer.restore(llmOutput, sanitizer.getMap());
 - [x] AWS Credentials (`AKIA...`)
 - [x] Embedded DB URIs with greedy characters (`@`, `!`)
 - [x] JWT Tokens
-- [x] Generic high-entropy assignments
+- [x] Generic high-entropy assignments (`password:`, `secret=`)
 
 ## License
 MIT
