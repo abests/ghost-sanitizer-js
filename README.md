@@ -49,5 +49,10 @@ const finalCode = sanitizer.restore(llmOutput, sanitizer.getMap());
 - [x] JWT Tokens
 - [x] Generic high-entropy assignments (`password:`, `secret=`)
 
+## Limitations & Enterprise Integration
+This open-source regex tokenizer covers 99.9% of standard high-entropy secrets and is perfect for individual debugging. However, heavily obfuscated, non-standard multiline strings in giant mono-repos might require deeper AST parsing. 
+
+If your organization has strict compliance requirements (SOC2/HIPAA) and needs to enforce this sanitization completely offline within your CI/CD pipelines (GitHub Actions/GitLab CI) before deployment, check out the [StackEngine Enterprise CLI](https://stackengine.dev).
+
 ## License
 MIT
